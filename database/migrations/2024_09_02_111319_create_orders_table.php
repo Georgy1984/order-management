@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             //чтобы ограничить 'status' определенными значениями из списка.
-            $table->enum('status', ['created', 'paid', 'completed', 'failed', 'canceled']);
+            $table->enum('status', ['created', 'paid', 'completed', 'failed', 'cancelled']);
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('completed_at')->nullable();
-            $table->timestamps();
+
+
         });
     }
 
