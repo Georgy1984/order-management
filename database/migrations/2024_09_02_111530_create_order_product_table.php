@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->index()->constrained();
             $table->foreignId('product_id')->index()->constrained();
-            //$table->unique(['order_id', 'product_id']); добавить к миграции, чтобы исключить повторное добавление товара
-            //подумать как реализовать это на уровне контроллера.
-            $table->timestamps();
+            $table->unique(['order_id', 'product_id']);
+
+
         });
     }
 

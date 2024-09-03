@@ -32,4 +32,6 @@ class GoCommand extends Command
                 'price' => 35,
               ]);
     }
+
+
 }
