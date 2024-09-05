@@ -16,8 +16,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'status' => 'required',
-            'paid_at' => 'required|date_format:Y-m-d',
-            'completed_at' => 'required|date_format:Y-m-d',
+            'id' => 'required',
+
         ];
     }
 }
