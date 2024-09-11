@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Http;
 class PaymentGateway
 {
 
-    const URL = 'https://api.github.com/users/mralexgray/repos';
     public function pay(int $orderId) {
+        $url = env('GITHUB_REPO_URL');
 
-        $payresult = Http::withoutVerifying()->get(self::URL,['orderid' => $orderId]);
+        $payresult = Http::withoutVerifying()->get($url ,['orderid' => $orderId]);
 
 //        dd($payresult->json());
     }

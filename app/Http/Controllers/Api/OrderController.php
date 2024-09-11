@@ -12,11 +12,10 @@ use App\Services\PaymentGateway;
 class OrderController extends Controller
 {
 
-    public function create(Request $request) {
+    public function create(StoreRequest $request) {
 
-//        $data = $request->validated(); Разобраться почему метод validated() -> не работает, для валидации реквеста.
-
-        $order = Order::create(request()->all());
+        $data = $request->validated();
+        $order = Order::create($data);
         foreach (array_unique($request->products) as $product) {
             $order->products()->attach($product);
         }
@@ -37,6 +36,7 @@ class OrderController extends Controller
     }
 
     public function paymentCallback(Request $request)
+
     {
 
         $json = $request->json()->all();
