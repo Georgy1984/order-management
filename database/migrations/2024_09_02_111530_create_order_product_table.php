@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->index()->constrained();
             $table->foreignId('product_id')->index()->constrained();
+            $table->integer('quantity');
             $table->unique(['order_id', 'product_id']);
 
 

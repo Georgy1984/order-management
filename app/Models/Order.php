@@ -13,6 +13,13 @@ class Order extends Model
     public $timestamps = true;
 
     public function products() {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class, 'order_product')->withPivot('quantity');
+    }
+
+    public function getAmountAttribute()
+    {
+        return $this->products->sum(function ($product) {
+            return $product->price * $product->pivot->quantity;
+        });
     }
 }

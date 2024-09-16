@@ -12,7 +12,8 @@ use App\Services\PaymentGateway;
 class OrderController extends Controller
 {
 
-    public function create(StoreRequest $request) {
+    public function create(StoreRequest $request)
+    {
 
         $data = $request->validated();
         $order = Order::create($data);
@@ -22,16 +23,24 @@ class OrderController extends Controller
         return response()->json(['order' => $order], 201);
     }
 
-    public function pay(Order $order, PaymentGateway $paymentGateway)
+    public function pay(Order $order, PaymentGateway $paymentGateway, StoreRequest $request)
     {
-        $paymentGateway->pay($order->id);
+        $validatedData = $request->validated();
 
-        //подумать как реализовать отправку запроса на внешний сервис.
-        //Реализовать изменение статуса на "оплачен". Продумать как сделать таймер на 10 минут, что бы изменить статус на "отменен".
-        //'status' => 'created'
-        return response()->json(['message' => 'Payment initiated'], 202);
+        $orderId = $validatedData['order_id'];
+        $order = Order::findOrFail($orderId);
 
-        //нужно ли добавить обработку ответа от процессингового сервака? К примеру: банк упал.
+        $amount = $order->amount;
+
+        $gateway = new PaymentGateway();
+        $result = $gateway->payment($request, $orderId, $amount);
+
+        if (isset($result['error'])) {
+            return response()->json(['error' => $result['error']], 400);
+        }
+
+        return response()->json(['success' => $result], 200);
+
 
     }
 
@@ -40,7 +49,7 @@ class OrderController extends Controller
     {
 
         $json = $request->json()->all();
-        //       $order =  Order::find($json['id']);
+
         if ($json['status'] === 'paid') {
             Order::find($json['id'])->update(['status' => 'paid']);
 
@@ -49,19 +58,9 @@ class OrderController extends Controller
             Order::find($json['id'])->update(['status' => 'failed']);
 
         }
-        // $id = $json['id'] ?? null;
-        //сделать валидацию на входящий json (фильтровать статусы колбека и проверить, что в теле есть ID). Подумать как достать из входящего json ID и статус закза другим способом.
-        //получить по ID заказ из базы. Если заказ не найден, вернуть ответ с ошибкой.
-        //проверить статус заказа. Если он исполнен или faild, то вернуть ошибку, что не верный статус заказа.
-        //при обновлении статусов Paid, нужно прописать paid_at.
-        //        dd($json);
 
-        //если успешно - меняем статус "исполнен". Если не прошла оплата - меняем статус на "отменен".
         return response()->json(['message' => 'Callback processed'], 200);
     }
-
-
-
 
 
 }
