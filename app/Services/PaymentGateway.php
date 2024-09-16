@@ -38,7 +38,7 @@ class PaymentGateway
                 'json' => [
                     'order_id' => $orderId,
                     'amount' => $amount,
-                    'callback_url' => config('payment_gateway.callback_url'),
+                    'callback_url' => config('payment.callback_url'),
                     'products' => $validatedData['products'],
                     'price' => $validatedData['price'],
                 ],
