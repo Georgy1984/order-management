@@ -15,9 +15,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required',
-            'paid_at' => 'required|date_format:Y-m-d',
-            'completed_at' => 'required|date_format:Y-m-d',
+            'products' => 'required|array',
+            'products.*' => 'integer|exists:products,id',
+            'price' => 'required|numeric|min:0'
         ];
     }
+
+
 }
