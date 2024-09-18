@@ -16,9 +16,9 @@ class StoreRequest extends FormRequest
     {
         return [
             'products' => 'required|array',
-            'products.*' => 'integer|exists:products,id|distinct:strict',
+            'products.*' => 'integer|exists:products,id|distinct',
             'price' => 'required|numeric|min:0',
-            'order_id' => 'required|integer|exists:orders,id|distinct:strict',
+            'order_id' => 'required|integer|exists:orders,id',
         ];
     }
 

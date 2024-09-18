@@ -17,7 +17,7 @@ class OrderController extends Controller
 
         $data = $request->validated();
         $order = Order::create($data);
-        foreach (array_unique($request->products) as $product) {
+        foreach ($request->products as $product) {
             $order->products()->attach($product);
         }
         return response()->json(['order' => $order], 201);
@@ -26,40 +26,30 @@ class OrderController extends Controller
     public function pay(Order $order, PaymentGateway $paymentGateway, StoreRequest $request)
     {
         $validatedData = $request->validated();
-
-        $orderId = $validatedData['order_id'];
-        $order = Order::findOrFail($orderId);
+        $orderId = $order->id;
 
         $amount = $order->amount;
-
-        $gateway = new PaymentGateway();
-        $result = $gateway->payment($request, $orderId, $amount);
+        $result = $paymentGateway->payment($request, $orderId, $amount);
 
         if (isset($result['error'])) {
             return response()->json(['error' => $result['error']], 400);
         }
 
+
+        $order->update(['status' => 'created']);
+
         return response()->json(['success' => $result], 200);
-
-
     }
 
-    public function paymentCallback(Request $request)
+    public function paymentCallback(StoreRequest $request, PaymentGateway $paymentGateway)
 
     {
 
         $json = $request->json()->all();
 
-        if ($json['status'] === 'paid') {
-            Order::find($json['id'])->update(['status' => 'paid']);
+        $paymentGateway->handleCallback($json);
 
-        } else {
-
-            Order::find($json['id'])->update(['status' => 'failed']);
-
-        }
-
-        return response()->json(['message' => 'Callback processed'], 200);
+        return response()->json(['message' => 'success'], 200);
     }
 
 

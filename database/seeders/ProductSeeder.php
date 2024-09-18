@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
     {
         Product::factory()->count(10)->create([
             'name' => Str::random(10),
-            'price' => rand(10, 100) ,
+            'price' => rand(10, 100),
         ]);
     }
 }
