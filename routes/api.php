@@ -5,10 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
 Route::prefix('orders')->group(function () {
 
     Route::post('/create', [OrderController::class, 'create']);
-    Route::put('/pay/{order}', [OrderController::class, 'pay']);
-    Route::put('/callback', [OrderController::class, 'paymentCallback']);
+    Route::post('/payments/{order}', [OrderController::class, 'pay']);
+    Route::post('/callback', [OrderController::class, 'paymentCallback']);
 });

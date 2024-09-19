@@ -12,7 +12,15 @@ class Order extends Model
     protected $fillable = ['status', 'paid_at', 'completed_at'];
     public $timestamps = true;
 
-    public function products() {
-        return $this->belongsToMany(Product::class);
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_product')->withPivot('quantity');
+    }
+
+    public function getAmountAttribute()
+    {
+        return $this->products->sum(function ($product) {
+            return $product->price * $product->pivot->quantity;
+        });
     }
 }

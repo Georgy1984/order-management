@@ -37,6 +37,7 @@ return [
 
     'mailers' => [
 
+
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
@@ -85,6 +86,12 @@ return [
                 'smtp',
                 'log',
             ],
+
+            'mailersend' => [
+                'transport' => 'mailersend',
+            ],
+
+
         ],
 
         'roundrobin' => [
